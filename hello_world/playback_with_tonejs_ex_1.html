@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!-- saved from url=(0037)http://tonejs.org/examples/score.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+	<title>SCORE</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+	<script type="text/javascript" src="./lib/Tone.js"></script>
+	<script type="text/javascript" src="./lib/jquery.min.js"></script>
+	<script type="text/javascript" src="./lib/Notone.GUI.js"></script>
+	<link rel="stylesheet" type="text/css" href="./lib/style.css">
+	<script type="text/javascript" src="./lib/Interface2.js"></script>
+	<link rel="stylesheet" type="text/css" href="./lib/examples.css">
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>
+	<div id="Content">
+		<script id="ToneCode" type="text/javascript">
+			/*
+			 * BASS
+			 */
+			var synth_bass = new Tone.PolySynth(4, Tone.MonoSynth, {
+				"volume" : -10,
+				"envelope" : {
+						"attack" : 0.1,
+						"decay" : 0.3,
+						"release" : 2,
+				},
+				"filterEnvelope" : {
+						"attack" : 0.01,
+						"decay" : 0.1,
+						"sustain" : 0.5,
+						"min" : 200,
+						"max" : 1200
+				}
+			}).toMaster();
+			
+			/*
+			 * ROUTE AND SCORE
+			 */
+			Tone.Note.route("Synth_bass", function(time, note, duration, velocity){
+				synth_bass.triggerAttackRelease(note, duration, time, velocity);
+			});
+			var Score = {
+				"Synth_bass" : [
+					["0:0", "C2", "2n", .5],
+					["1:0", "A1", "1n", .5],
+					["1:2", "A2", "4n", .5],
+					["2:0", "F1", "2n", .5],
+					["3:0", "G1", "2n", .5]
+				]
+			};
+			Tone.Note.parseScore(Score);
+			
+			Tone.Transport.bpm.value = 90
+			Tone.Transport.setLoopPoints(0, "4m");
+   Tone.Transport.loop = true;
+		</script>
+		<script type="text/javascript">
+			$(function(){
+				Notone.config({
+					"search" : false,
+					"expandInDrawer" : true,
+					"hideDrawer" : Interface.isMobile,
+					"drawer" : true,
+					"container" : "body"
+				});
+				
+				new Interface.Button({
+					key : 32,
+					type : "toggle",
+					text : "Start",
+					activeText : "Stop",
+					start : function(){
+						Tone.Transport.start();
+					},
+					end : function(){
+						Tone.Transport.stop();
+					}
+				});
+			});
+		</script>
+	</div>
+</body>
+</html>

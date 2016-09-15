@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript" src="lib/Tone.js"></script>
+        <script type="text/javascript" src="lib/jquery.min.js"></script>
+        <!--<script type="text/javascript" src="lib/Notone.GUI.js"></script>-->
+        <!--<script type="text/javascript" src="lib/Interface.js"></script>-->
+        <style type="text/css">
+          body {
+            background-color: #071A40;
+          }
+          #vocal_cursor,#piano_cursor {
+            position:absolute;
+            left:0;
+            top:0;
+            width:50%;
+            height:5px;
+            background-color:#5584AF;
+          }
+          #vocal_cursor {
+            background-color:#1F7C4C;
+            left:50%;
+          }
+        </style>
+        <!--<link rel="stylesheet" type="text/css" href="lib/examples.css">-->
+        <script type="text/javascript" src="./lib/break_of_day_1.js"></script>
+        <script data-main="app" src="lib/require.js"></script>
+        
+    </head>
+    <body>
+      <div id="roll">
+        <div id="vocal_cursor"></div>
+        <div id="piano_cursor"></div>
+      </div>
+      <!--<script type="text/javascript">-->
+      <!--  $(function(){-->
+      <!--    new Interface.Button({-->
+      <!--      text : "Start",-->
+      <!--      activeText : "Stop",-->
+      <!--      type : "toggle",-->
+      <!--      key : 32, //spacebar-->
+      <!--      start : function(){-->
+      <!--        Tone.Transport.start();-->
+      <!--      },-->
+      <!--      end : function(){-->
+      <!--        Tone.Transport.stop();-->
+      <!--      },-->
+      <!--    });-->
+      <!--  });-->
+      <!--</script>-->
+    </body>
+</html>

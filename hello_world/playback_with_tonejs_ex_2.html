@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!-- saved from url=(0037)http://tonejs.org/examples/score.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+	<title>SCORE</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+	<script type="text/javascript" src="./tone_js_support/Tone.js"></script>
+	<script type="text/javascript" src="./tone_js_support/jquery.min.js"></script>
+	<script type="text/javascript" src="./tone_js_support/Notone.GUI.js"></script>
+	<link rel="stylesheet" type="text/css" href="./tone_js_support/style.css">
+	<script type="text/javascript" src="./tone_js_support/Interface.js"></script>
+	<link rel="stylesheet" type="text/css" href="./tone_js_support/examples.css">
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>
+	<div id="Content">
+		<script id="ToneCode" type="text/javascript">
+			/*
+			 * PIANO
+			 */
+      var piano = new Tone.PolySynth(10, Tone.Sampler, {
+        "055_mp": "https://dl.dropboxusercontent.com/u/11997856/samples/20150810/keyboards/pianos/piano_2/055_mp.wav",
+				"057_mp": "https://dl.dropboxusercontent.com/u/11997856/samples/20150810/keyboards/pianos/piano_2/057_mp.wav",
+				"059_mp": "https://dl.dropboxusercontent.com/u/11997856/samples/20150810/keyboards/pianos/piano_2/059_mp.wav",
+				"060_mp": "https://dl.dropboxusercontent.com/u/11997856/samples/20150810/keyboards/pianos/piano_2/060_mp.wav",
+				"062_mp": "https://dl.dropboxusercontent.com/u/11997856/samples/20150810/keyboards/pianos/piano_2/062_mp.wav",
+				"064_mp": "https://dl.dropboxusercontent.com/u/11997856/samples/20150810/keyboards/pianos/piano_2/064_mp.wav",
+				"066_mp": "https://dl.dropboxusercontent.com/u/11997856/samples/20150810/keyboards/pianos/piano_2/066_mp.wav",
+				"067_mp": "https://dl.dropboxusercontent.com/u/11997856/samples/20150810/keyboards/pianos/piano_2/067_mp.wav"
+      }).toMaster();
+      piano.volume = -10;
+      piano.envelope = { release: 0.2 };
+      
+      /*
+			 * ROUTE AND SCORE
+			 */
+			Tone.Note.route("Piano", function(time, note, duration, velocity){
+				piano.triggerAttackRelease(note, duration, time, velocity);
+			});
+			var Score = {
+				"Piano" : [
+					[0, "055_mp", .3, .9],
+					[.25, "057_mp", .3, .8],
+					[.5, "059_mp", .3, .7],
+					[.75, "060_mp", .3, .6],
+					[1, "062_mp", .3, .5],
+          [1.25, "064_mp", .3, .4],
+          [1.5, "066_mp", .55, .3],
+          [2, "055_mp", 5, .6],
+          [2.02, "059_mp", 5, .6],
+          [2.04, "062_mp", 5, .6],
+          [2.06, "067_mp", 5, .6]
+				]
+			};
+			Tone.Note.parseScore(Score);
+			
+			// Tone.Transport.loop = true;
+			Tone.Transport.bpm.value = 90;
+			// Tone.Transport.setLoopPoints(0, "4m");
+      
+      // Time the loading of the audio material into the Tone.Buffer.
+      var t0 = Math.round(+new Date()/1000);
+      console.log('t0:');
+      console.log(t0);
+      Tone.Buffer.onload = function(){
+        var t1 = Math.round(+new Date()/1000);
+        console.log('Time (in sec) elapsed loading buffer:');
+        console.log(t1 - t0);
+      };
+      
+		</script>
+		<script type="text/javascript">
+			$(function(){
+				Notone.config({
+					"search" : false,
+					"expandInDrawer" : true,
+					"hideDrawer" : Interface.isMobile,
+					"drawer" : true,
+					"container" : "body"
+				});
+				
+				new Interface.Button({
+					key : 32,
+					type : "toggle",
+					text : "Start",
+					activeText : "Stop",
+					start : function(){
+						Tone.Transport.start();
+					},
+					end : function(){
+						Tone.Transport.stop();
+					}
+				});
+			});
+		</script>
+	</div>
+</body>
+</html>

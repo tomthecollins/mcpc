@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)http://tonejs.org/examples/mic.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+	<title>MICROPHONE</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" type="image/png" sizes="174x174" href="http://tonejs.org/examples/style/favicon.png">
+	
+	<script type="text/javascript" src="./lib/Tone.js"></script>
+	<script type="text/javascript" src="./lib/jquery.min.js"></script>
+	<script type="text/javascript" src="./lib/draggabilly.js"></script>
+	<script type="text/javascript" src="./lib/Interface.js"></script>
+	<script type="text/javascript" src="./lib/Logo.js"></script><style type="text/css">@import url(https://fonts.googleapis.com/css?family=Roboto+Mono);</style><style type="text/css">#TonejsLogo{background-color:#000;cursor:pointer}#TonejsLogo,#TonejsLogo #Border,#TonejsLogo #Canvas,#TonejsLogo #Title{position:absolute}#TonejsLogo #TextContainer{position:absolute;width:auto;-webkit-transform:translate(-50%, 0px);-ms-transform:translate(-50%, 0px);transform:translate(-50%, 0px);left:50%;height:100%}#TonejsLogo #TextContainer #Title{position:relative;display:inline-block;font-family:Roboto Mono,monospace;color:#fff;text-align:center;height:100%;top:0;width:100%;font-weight:400}#TonejsLogo #TextContainer #Title .Closer{margin:-3%}#TonejsLogo #TextContainer #Canvas{position:absolute;height:100%;top:0;border-radius:2%;z-index:0;right:0;width:10px;background-color:#f734d7}</style>
+
+	<link rel="stylesheet" type="text/css" href="./lib/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+
+</head>
+<body>
+	<style type="text/css">
+		canvas {
+			width: 100%;
+			height: 200px;
+			background-color: black;
+			border-bottom-left-radius: 5px;
+			border-bottom-right-radius: 5px;
+		}
+	</style>
+	<div id="Content" class="FullScreen">
+		<div id="Title">Microphone</div>
+		<div id="Explanation">
+			If supported, Tone.Microphone uses <code>getUserMedia</code> to open
+			the user's microphone where it can then be processed with Tone.js.
+		</div>
+	<!--<canvas width="1127" height="200"></canvas><div class="Button Toggle">Start Mic</div></div>-->
+	<script type="text/javascript">
+
+		//you probably DONT want to connect the microphone
+		//directly to the master output because of feedback.
+		var mic = new Tone.Microphone();
+
+		var analyser = new Tone.Analyser({
+			"type" : "fft",
+			"size" : 256
+		});
+
+		mic.connect(analyser);
+
+	</script>
+	
+	<script id="GUI" type="text/javascript">
+		$(function(){
+
+			//indicate if the microphone is supported or not
+			if (!Tone.Microphone.supported){
+				$("<div>", {
+					"id" : "NotSupported",
+					"text" : "getUserMedia is not supported by your browser."
+				}).appendTo("#Content");
+			} else {
+
+				mic.open(function(){
+
+					var canvas = $("<canvas>").appendTo("#Content");
+
+					var context = canvas.get(0).getContext("2d");
+
+					context.canvas.width = canvas.width();
+					context.canvas.height = canvas.height();
+
+					function drawLoop(){
+						var canvasWidth = context.canvas.width;
+						var canvasHeight = context.canvas.height;
+						requestAnimationFrame(drawLoop);
+						//draw the waveform
+						context.clearRect(0, 0, canvasWidth, canvasHeight);
+						var values = analyser.analyse();
+						context.beginPath();
+						context.lineJoin = "round";
+						context.lineWidth = 6;
+						context.strokeStyle = "white";
+						//context.moveTo(0, (values[0] / 255) * canvasHeight);
+						for (var i = 1, len = values.length; i < len; i++){
+							var val = values[i] / 255;
+							var x = canvasWidth * Math.log(i) / Math.log(255);
+							var y = canvasHeight * (1 - val);
+							context.lineTo(x, y);
+						}
+						context.stroke();
+					}
+					drawLoop();
+					
+					new Interface.Button({
+						type : "toggle",
+						text : "Start Mic",
+						activeText : "Stop Mic",
+						start : function(){
+							mic.start();
+						},
+						end : function(){
+							mic.stop();
+						}
+					});
+				});
+
+			}
+
+		});
+	</script>
+
+</body></html>
